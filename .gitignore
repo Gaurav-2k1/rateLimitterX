@@ -1,0 +1,37 @@
+# Java
+backend/target/
+backend/.classpath
+backend/.project
+backend/.settings/
+*.jar
+*.war
+*.ear
+
+# Node
+frontend/dashboard/node_modules/
+frontend/dashboard/dist/
+frontend/dashboard/.vite/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker
+docker-compose.override.yml
+

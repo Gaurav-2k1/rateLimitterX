@@ -1,0 +1,104 @@
+# =============================================================================
+# Spring Boot Application Configuration
+# =============================================================================
+
+spring:
+  profiles:
+    active: dev
+
+  application:
+    name: ratelimitx
+  
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost:5432}/${DB_NAME:ratelimitx}?sslmode=${DB_SSLMODE:disable}
+    username: ${DB_USER:ratelimitx}
+    password: ${DB_PASSWORD:dev_password}
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      connection-timeout: 30000
+  
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  # Security Configuration
+  security:
+    jwt:
+      secret: ${JWT_SECRET:your-256-bit-secret-key-change-in-production-min-32-chars}
+      expiration: 900000  # 15 minutes
+      refresh-expiration: 604800000  # 7 days
+
+# =============================================================================
+# Server Configuration
+# =============================================================================
+
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# =============================================================================
+# Upstash Redis Configuration
+# =============================================================================
+
+upstash:
+  redis:
+    url: ${UPSTASH_REDIS_URL:https://your-redis-url.upstash.io}
+    token: ${UPSTASH_REDIS_TOKEN:your-redis-token}
+
+# =============================================================================
+# Management & Monitoring
+# =============================================================================
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# =============================================================================
+# Logging Configuration
+# =============================================================================
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: WARN
+    com.ratelimitx: DEBUG
+    com.ratelimitx.service.algorithm: DEBUG
+    com.ratelimitx.util: DEBUG
+    com.ratelimitx.infrastructure.redis: DEBUG
+
+# =============================================================================
+# Rate Limit Configuration
+# =============================================================================
+
+ratelimit:
+  # Fail-open strategy: allow requests when rate limit service fails
+  fail-open: true
+  
+  # Redis failure handling
+  redis:
+    failure-threshold: 5
+  
+  # API rate limiting (for the rate limit API itself)
+  api:
+    max-requests: 1000
+    window-seconds: 60
+    fail-open: true
